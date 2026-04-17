@@ -1,0 +1,17 @@
+{
+  "name": "cdr",
+  "version": "1.0.0",
+  "main": "service-worker.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@capacitor/android": "^8.3.1",
+    "@capacitor/cli": "^7.6.2",
+    "@capacitor/core": "^8.3.1"
+  }
+}

@@ -1,0 +1,48 @@
+name: Android Build (test)
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Pobranie kodu z Twojego repozytorium
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      # 2. Ustawienie środowiska Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # 3. Instalacja zależności (twoje pluginy)
+      - name: Install Dependencies
+        run: npm install
+
+      # 4. Kopiowanie plików webowych do Androida
+      - name: Capacitor Sync
+        run: npx cap sync android
+
+      # 5. Ustawienie Javy (wymagana do budowania APK)
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      # 6. Budowanie APK za pomocą Gradle
+      - name: Build Android APK
+        run: |
+          cd android
+          ./gradlew assembleDebug
+
+      # 7. Zapisanie gotowego APK jako "Artifact" (do pobrania)
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: MasterOS-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
