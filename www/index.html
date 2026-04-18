@@ -1,399 +1,379 @@
 <!doctype html>
 <html lang="pl">
 <head>
-  <meta charset="utf-8">
-  <title>Coder HTML/INO</title>
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#000">
-  <meta name="color-scheme" content="dark">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  
-  <link rel="manifest" href="manifest.json">
-  <script>
-    // Rejestracja Service Workera
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .catch(err => console.error('Błąd rejestracji Service Worker:', err));
-      });
-    }
-  </script>
-  <style>
-        /* Stylistyka Mastera - obsługa Notch i safe areas */
+    <meta charset="utf-8">
+    <title>TEST</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#000">
+    <meta name="color-scheme" content="only light">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        :root {
+            color-scheme: only light;
+            --red: #222;
+            --grey: #f5f5f5;
+            --dark: #333;
+            --light: #000;
+            --black: #333;
+            --accent: #ff3b30; /* Kolor akcentu dla elementów Smart */
+        }
+
+        /* KLUCZOWE: Blokada skrolowania na poziomie okna */
         html, body {
-            margin: 0; padding: 0; height: 100%; width: 100%;
-            font-family: Arial, sans-serif; overflow: hidden;
+            overflow: hidden;
+            height: 100%;
+            width: 100%;
+            margin: 0;
+            padding: 0;
             background-color: #000;
-            padding-top: env(safe-area-inset-top);
-            padding-right: env(safe-area-inset-right);
-            padding-bottom: env(safe-area-inset-bottom);
-            padding-left: env(safe-area-inset-left);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        * {
             box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
         }
-        .container {
-            display: flex; height: 100%; width: 100%;
-            height: calc(100% - env(safe-area-inset-top) - env(safe-area-inset-bottom));
-        }
-        #install-banner {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
-            background-color: #007bff; color: white; text-align: center;
-            padding: 10px; display: none; justify-content: space-around;
-            align-items: center; font-size: 14px;
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
-        }
-        #install-banner button {
-            background-color: #28a745; color: white; border: none;
-            padding: 8px 15px; border-radius: 5px; cursor: pointer;
-        }
-        .editor-container, .preview-container { display: flex; flex-direction: column; width: 50%; height: 100%; position: relative; }
-        .preview-container { border-left: 1px solid #111; background-color: #fff; }
-        @media (max-width: 768px) { .editor-container { width: 100%; } .preview-container { display: none; } }
-        .toolbar {
-            background-color: #000; color: white; display: flex;
-            justify-content: space-between; align-items: center;
-            padding: 10px; height: 40px; box-sizing: border-box;
-            border-bottom: 1px solid #111;
-        }
-        .toolbar-title { font-weight: bold; margin-right: 15px; padding: 5px 0; }
-        .toolbar button {
-            background: none; border: 1px solid #fff; color: #fff;
-            padding: 5px 10px; cursor: pointer; display: flex;
-            align-items: center; gap: 5px; border-radius: 4px;
-        }
-        .toolbar button:hover { background-color: #222; }
-        .editor-toolbar-groups { display: flex; align-items: center; flex-grow: 1; justify-content: flex-end; gap: 20px; }
-        .editor-toolbar-groups > .button-group:first-child { margin-right: auto; }
-        .button-group { display: flex; gap: 10px; }
-        .editor { flex-grow: 1; background-color: #000; overflow: hidden; position: relative; display: flex; flex-direction: column; }
-        .CodeMirror { flex-grow: 1; height: auto !important; font-size: 1.1em; }
-        #preview-frame { width: 100%; height: 100%; border: none; background-color: white; }
-        
-        .context-menu {
-            position: absolute; background-color: #000; border: 1px solid #666;
-            border-radius: 5px; box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000; display: none; list-style: none; margin: 0; padding: 5px 0; color: #fff;
-        }
-        .context-menu li { padding: 8px 15px; cursor: pointer; white-space: nowrap; }
-        .context-menu li:hover { background-color: #111; }
 
-        .CodeMirror-dialog { background: #111; color: #eee; padding: 5px 10px; }
-        .CodeMirror-dialog input { background: #000; border: 1px solid #666; color: white; outline: none; margin-left: 5px; }
-        .CodeMirror-search-hint { color: #aaa; font-size: 0.8em; margin-left: 10px; }
+        /* Kontener symulujący ekran telefonu */
+        .app-container { 
+            width: 400px;
+            height: 806px;
+            background-color: var(--light);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden; 
+        }
 
-        /* Pasek skrótów - przypisany do kontenera edytora */
-        .keyboard-wrapper {
+        /* Header (Górny pasek) */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 55px;
+            border-bottom: 1px solid #1a1a1a;
+            background-color: var(--light);
+            color: #fff; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+            z-index: 100;
+            letter-spacing: 1px;
+        }
+
+        /* Kontener stron dla animacji */
+        .pages-container {
+            display: flex;
+            width: 500%; /* 5 stron */
+            height: 100%;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .page {
+            width: 20%;
+            height: 100%;
+            overflow-y: auto;
+            padding: 65px 20px 80px 20px;
+            background-color: var(--red);
+            flex-shrink: 0;
+        }
+
+        /* Smart Home Grid */
+        .smart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .smart-card {
+            background: #2a2a2a;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+
+        .smart-card:active {
+            transform: scale(0.95);
+        }
+
+        .smart-card i {
+            font-size: 24px;
+            color: var(--accent);
+        }
+
+        .smart-card .status {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .smart-card .label {
+            font-weight: 500;
+            color: #fff;
+        }
+
+        /* Dolny pasek nawigacji */
+        .bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            z-index: 1001;
+            height: 70px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            background-color: rgba(0,0,0,0.9);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid #1a1a1a;
+            z-index: 100;
+            padding-bottom: 10px;
+        }
+
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-bottom: env(safe-area-inset-bottom);
-            pointer-events: none;
-        }
-        
-        #keyboard-toggle {
-            background:#1115;
-            color:#9995;
-            border: none;
-            border-radius: 12px 12px 0 0;
-            padding: 5px 0;
+            font-size: 10px;
+            color: #555;
             cursor: pointer;
-            width: 80px;
-            height: 25px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: auto;
-            transition: background 0.3s;
-            backdrop-filter: blur(1px);
-        }
-        
-        #keyboard-toggle:active {
-            background: #9999;
+            transition: color 0.3s;
+            width: 20%;
         }
 
-        .mobile-keyboard-bar {
-            background:#1115;
-            display: none; 
-            justify-content: space-around;
-            padding: 5px;
-            border-top: 1px solid #4442;
-            gap: 5px;
-            width: 100%;
-            pointer-events: auto;
-            backdrop-filter: blur(1px);
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
         }
-        
-        .mobile-keyboard-bar button {
-            backdrop-filter: blur(1px);
-            flex: 1;
-            background: #000;
+
+        .nav-item.active {
+            color: #fff;
+        }
+
+        /* Sekcja info/tekstowa */
+        .page h2 { color: #fff; margin-bottom: 10px; }
+        .page p { color: #aaa; font-size: 14px; line-height: 1.5; }
+
+        /* Przycisk Mastera */
+        #master-install-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             color: white;
-            border: none;
-            border-radius: 4px;
-            padding: 12px 0;
-            font-size: 11px;
+            padding: 15px;
+            border-radius: 12px;
             font-weight: bold;
-            text-transform: uppercase;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%;
         }
+
+        #master-install-btn.visible { display: flex; }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            color: #444;
+        }
+
+        .empty-state i { font-size: 50px; margin-bottom: 15px; }
+
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/theme/dracula.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldgutter.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/dialog/dialog.css" />
 </head>
 <body>
-    <div id="install-banner">
-        <span>Zainstaluj aplikację Master!</span>
-        <button id="install-button">ZAINSTALUJ!</button>
-    </div>
-    <div class="container">
-        <div class="editor-container">
-            <div class="toolbar">
-                <div class="editor-toolbar-groups">
-                    <div class="button-group">
-                        <button onclick="undo()" title="Cofnij"><i class="fas fa-undo"></i></button>
-                        <button onclick="redo()" title="Ponów"><i class="fas fa-redo"></i></button>
-                        <button onclick="clearEditor()" title="Wyczyść"><i class="fas fa-trash"></i></button>
+
+    <div class="app-container" id="app-viewport">
+        <header class="header" id="main-header">PULPIT</header>
+        
+        <div class="pages-container" id="pages-container">
+            <section class="page" id="page-0">
+                <button id="master-install-btn">
+                    <i class="fas fa-download" style="margin-right: 10px;"></i> INSTALUJ PANEL
+                </button>
+                
+                <h2>Witaj, Master</h2>
+                <p>Zarządzaj swoim inteligentnym domem.</p>
+
+                <div class="smart-grid">
+                    <div class="smart-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <span class="label">Oświetlenie</span>
+                        <span class="status">Salon: ON</span>
                     </div>
-                    <div class="button-group">
-                        <button onclick="findAndReplace()" title="Znajdź i Zamień"><i class="fas fa-search"></i></button>
-                        <button onclick="saveFile()" title="Zapisz"><i class="fas fa-save"></i></button>
-                        <button onclick="loadFile()" title="Wczytaj"><i class="fas fa-folder-open"></i></button>
+                    <div class="smart-card">
+                        <i class="fas fa-thermometer-half"></i>
+                        <span class="label">Termostat</span>
+                        <span class="status">22.5°C</span>
                     </div>
-                    <div class="button-group">
-                        <button onclick="previewInNewTab()" title="Podgląd w nowej karcie"><i class="fas fa-external-link-alt"></i></button>
-                        <button onclick="previewFullscreen()" title="Pełny ekran"><i class="fas fa-desktop"></i></button>
+                    <div class="smart-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <span class="label">Ochrona</span>
+                        <span class="status">Uzbrojona</span>
+                    </div>
+                    <div class="smart-card">
+                        <i class="fas fa-video"></i>
+                        <span class="label">Kamera</span>
+                        <span class="status">Live Feed</span>
                     </div>
                 </div>
-            </div>
-            <div class="editor">
-                <textarea id="html-editor"></textarea>
-            </div>
-            <div class="keyboard-wrapper">
-                <button id="keyboard-toggle" onclick="toggleKeyboardBar()"><i class="fas fa-chevron-up"></i></button>
-                <div id="keyboard-bar" class="mobile-keyboard-bar">
-                    <button onclick="selectAll()">Ctrl+A</button>
-                   <button onclick="copyText()">Kopiuj</button>
-                    <button onclick="cutText()">Wytnij</button>
-                    <button onclick="copyText()">Ctrl+C</button>
-                    <button onclick="cutText()">Ctrl+X</button>
-                    <button onclick="pasteText()">Wklej</button>
+            </section>
+
+            <section class="page" id="page-1">
+                <h2>Oferta</h2>
+                <div class="smart-grid">
+                    <div class="smart-card" style="grid-column: span 2;">
+                        <i class="fas fa-plug"></i>
+                        <span class="label">Nowy Moduł Gniazdek</span>
+                        <span class="status">Dostępne od zaraz</span>
+                    </div>
                 </div>
-            </div>
+            </section>
+
+            <section class="page" id="page-2">
+                <div class="empty-state">
+                    <i class="fas fa-credit-card"></i>
+                    <p>Brak oczekujących płatności</p>
+                </div>
+            </section>
+
+            <section class="page" id="page-3">
+                <h2>Ostatnie zdarzenia</h2>
+                <div class="smart-card" style="margin-bottom: 10px;">
+                    <span class="status">10:15 - Wykryto ruch w garażu</span>
+                </div>
+                <div class="smart-card">
+                    <span class="status">08:00 - Aktywowano scenę "Dzień"</span>
+                </div>
+            </section>
+
+            <section class="page" id="page-4">
+                <h2>Ustawienia</h2>
+                <p>Wersja systemu 2.0.4-stable</p>
+            </section>
         </div>
-        <div class="preview-container">
-            <div class="toolbar"><span class="toolbar-title">PODGLĄD</span></div>
-            <iframe id="preview-frame"></iframe>
-        </div>
+
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchPage(0)"><i class="fas fa-home"></i><span>Pulpit</span></div>
+            <div class="nav-item" onclick="switchPage(1)"><i class="fas fa-shopping-bag"></i><span>Oferta</span></div>
+            <div class="nav-item" onclick="switchPage(2)"><i class="fas fa-credit-card"></i><span>Płatności</span></div>
+            <div class="nav-item" onclick="switchPage(3)"><i class="fas fa-history"></i><span>Historia</span></div>
+            <div class="nav-item" onclick="switchPage(4)"><i class="fas fa-ellipsis-h"></i><span>Więcej</span></div>
+        </nav>
     </div>
-
-    <ul id="context-menu" class="context-menu">
-        <li onclick="selectAll()">Zaznacz wszystko</li>
-        <li onclick="copyText()">Kopiuj</li>
-        <li onclick="cutText()">Wytnij</li>
-        <li onclick="pasteText()">Wklej</li>
-        <li onclick="findAndReplace()">Znajdź / Zamień</li>
-    </ul>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/xml/xml.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/javascript/javascript.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/css/css.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/clike/clike.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/edit/closebrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/selection/active-line.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldcode.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/fold/foldgutter.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/dialog/dialog.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/searchcursor.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/addon/search/search.min.js"></script>
 
     <script>
-        const STORAGE_KEY = 'coder_html_ino_content';
-        const previewFrame = document.getElementById('preview-frame');
-        
-        const editor = CodeMirror.fromTextArea(document.getElementById('html-editor'), {
-            mode: 'htmlmixed',
-            lineNumbers: true,
-            theme: 'dracula',
-            indentUnit: 4,
-            tabSize: 4,
-            lineWrapping: true, 
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            styleActiveLine: true,
-            foldGutter: true,
-            gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
-        });
+        // Zarządzanie nawigacją
+        let currentPage = 0;
+        const pagesContainer = document.getElementById('pages-container');
+        const navItems = document.querySelectorAll('.nav-item');
+        const header = document.getElementById('main-header');
+        const pageNames = ['PULPIT', 'OFERTA', 'PŁATNOŚCI', 'HISTORIA', 'WIĘCEJ'];
 
-        // Obsługa paska skrótów
-        function toggleKeyboardBar() {
-            const bar = document.getElementById('keyboard-bar');
-            const toggle = document.getElementById('keyboard-toggle');
-            const icon = toggle.querySelector('i');
+        function switchPage(index) {
+            if (index < 0 || index > 4) return;
             
-            if (bar.style.display === 'none' || bar.style.display === '') {
-                bar.style.display = 'flex';
-                icon.className = 'fas fa-chevron-down';
-            } else {
-                bar.style.display = 'none';
-                icon.className = 'fas fa-chevron-up';
+            currentPage = index;
+            
+            // Animacja kontenera
+            pagesContainer.style.transform = `translateX(-${index * 20}%)`;
+            
+            // Aktualizacja UI
+            navItems.forEach((item, i) => {
+                item.classList.toggle('active', i === index);
+            });
+            
+            header.innerText = pageNames[index];
+        }
+
+        // Gesty Swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        const viewport = document.getElementById('app-viewport');
+
+        viewport.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, {passive: true});
+
+        viewport.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, {passive: true});
+
+        function handleSwipe() {
+            const threshold = 50;
+            if (touchStartX - touchEndX > threshold) {
+                // Przesunięcie w lewo -> następna strona
+                switchPage(currentPage + 1);
+            }
+            if (touchEndX - touchStartX > threshold) {
+                // Przesunięcie w prawo -> poprzednia strona
+                switchPage(currentPage - 1);
             }
         }
 
-        function updatePreview() {
-            const content = editor.getValue();
-            const doc = previewFrame.contentWindow.document;
-            doc.open();
-            if (editor.getOption("mode") === "htmlmixed") {
-                doc.write(content);
-            } else {
-                doc.write('<html><body style="background:#333;color:#fff;padding:20px;"><h1>Tryb INO</h1><p>Podgląd wyłączony.</p></body></html>');
+        // Logika PWA (bez zmian w funkcjonalności)
+        const dynamicPWA = () => {
+            const manifestContent = {
+                "name": "Smart Master",
+                "short_name": "Smart",
+                "start_url": ".",
+                "display": "standalone",
+                "background_color": "#000000",
+                "theme_color": "#000000",
+                "icons": [{ "src": "https://i.ibb.co/N2DDRQd2/file-00000000a378720ab5a0481389667174.png", "sizes": "512x512", "type": "image/png" }]
+            };
+            const manifestBlob = new Blob([JSON.stringify(manifestContent)], { type: 'application/manifest+json' });
+            const linkElement = document.createElement('link');
+            linkElement.rel = 'manifest';
+            linkElement.href = URL.createObjectURL(manifestBlob);
+            document.head.appendChild(linkElement);
+
+            if ('serviceWorker' in navigator) {
+                const swCode = `self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));`;
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                navigator.serviceWorker.register(URL.createObjectURL(swBlob), { scope: './' });
             }
-            doc.close();
-        }
-
-        editor.on("change", () => {
-            localStorage.setItem(STORAGE_KEY, editor.getValue());
-            updatePreview();
-        });
-
-        window.onload = () => {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) editor.setValue(saved);
-            updatePreview();
         };
 
-        function setModeForExtension(filename) {
-            const newMode = filename.endsWith(".ino") ? "text/x-c++src" : "htmlmixed";
-            editor.setOption("mode", newMode);
-        }
-
-        function undo() { editor.undo(); editor.focus(); }
-        function redo() { editor.redo(); editor.focus(); }
-        function clearEditor() { editor.setValue(''); updatePreview(); editor.focus(); }
-        function findAndReplace() { editor.execCommand("find"); }
-
-        function saveFile() {
-            const name = prompt("Nazwa pliku:", "index.html");
-            if (!name) return;
-            setModeForExtension(name);
-            const blob = new Blob([editor.getValue()], { type: 'text/plain' });
-            const a = document.createElement('a');
-            a.href = URL.createObjectURL(blob);
-            a.download = name;
-            a.click();
-        }
-
-        function loadFile() {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.onchange = e => {
-                const file = e.target.files[0];
-                if (!file) return;
-                setModeForExtension(file.name);
-                const reader = new FileReader();
-                reader.onload = () => { editor.setValue(reader.result); updatePreview(); };
-                reader.readAsText(file);
-            };
-            input.click();
-        }
-
-        function previewInNewTab() {
-            const content = editor.getValue();
-            const previewWindow = window.open("", "_blank");
-            if (previewWindow) {
-                previewWindow.document.open();
-                previewWindow.document.write(content);
-                previewWindow.document.close();
-            }
-        }
-
-        function previewFullscreen() {
-            if (editor.getOption("mode") !== "htmlmixed") return;
-            const f = document.createElement("iframe");
-            Object.assign(f.style, { position: "fixed", top: "0", left: "0", width: "100%", height: "100%", zIndex: "9999", border: "none" });
-            document.body.appendChild(f);
-            const doc = f.contentWindow.document;
-            doc.open(); doc.write(editor.getValue()); doc.close();
-            const btn = doc.createElement('button');
-            btn.innerHTML = '✕ Wyjdź';
-            Object.assign(btn.style, { position: 'fixed', top: '20px', right: '20px', padding: '10px', background: 'red', color: 'white', border: 'none', cursor: 'pointer' });
-            btn.onclick = () => document.body.removeChild(f);
-            doc.body.appendChild(btn);
-        }
-
-        const contextMenu = document.getElementById('context-menu');
-        editor.getWrapperElement().addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            contextMenu.style.top = `${e.clientY}px`;
-            contextMenu.style.left = `${e.clientX}px`;
-            contextMenu.style.display = 'block';
-        });
-        document.addEventListener('click', () => contextMenu.style.display = 'none');
-
-        function selectAll() { editor.execCommand('selectAll'); editor.focus(); }
-        function copyText() { 
-            const text = editor.getSelection();
-            if (text) navigator.clipboard.writeText(text);
-            editor.focus();
-        }
-        function cutText() { 
-            const text = editor.getSelection();
-            if (text) {
-                navigator.clipboard.writeText(text).then(() => {
-                    editor.replaceSelection('');
-                });
-            }
-            editor.focus();
-        }
-        function pasteText() { 
-            navigator.clipboard.readText().then(t => {
-                editor.replaceSelection(t);
-            });
-            editor.focus();
-        }
+        window.addEventListener('load', dynamicPWA);
 
         let deferredPrompt;
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            document.getElementById('install-banner').style.display = 'flex';
+            document.getElementById('master-install-btn')?.classList.add('visible');
         });
-        document.getElementById('install-button').onclick = () => {
-            document.getElementById('install-banner').style.display = 'none';
-            if (deferredPrompt) deferredPrompt.prompt();
-        };
 
-        if ('launchQueue' in window) {
-            window.launchQueue.setConsumer(async (launchParams) => {
-                if (launchParams.files && launchParams.files.length > 0) {
-                    const fileHandle = launchParams.files[0];
-                    try {
-                        const file = await fileHandle.getFile();
-                        const content = await file.text();
-                        setModeForExtension(file.name);
-                        if (editor) {
-                            editor.setValue(content);
-                            updatePreview();
-                            document.title = `Edytujesz: ${file.name}`;
-                        }
-                    } catch (err) {
-                        console.error("Błąd podczas odczytu pliku:", err);
-                    }
-                }
-            });
-        }
+        document.getElementById('master-install-btn').addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt = null;
+            }
+        });
     </script>
 </body>
 </html>

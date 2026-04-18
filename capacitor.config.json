@@ -1,5 +1,5 @@
 {
-  "appId": "pl.coder.app",
-  "appName": "Coder",
+  "appId": "pl.test.app",
+  "appName": "Tester",
   "webDir": "www"
 }
